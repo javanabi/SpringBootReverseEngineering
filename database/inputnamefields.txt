@@ -1,0 +1,8 @@
+firstname
+MIDDLENAME
+FATHERSNAME
+FACULTYNAME
+LASTNAME
+email
+phoneno
+photo
