@@ -44,7 +44,7 @@ public class SBControllerClasses extends AbstractDataAccessObject{
 			packageNameString = packageNameString + "\\"+controllerPackage;
 			packageDir = new File(packageNameString);
 			packageDir.mkdir();
-
+			
 			PrintWriter writer = new PrintWriter(packageNameString + "\\"
 					+ CapitalCase.toCapitalCase(className) + "Controller.java");
 
@@ -118,8 +118,12 @@ public class SBControllerClasses extends AbstractDataAccessObject{
 			
 			writer.println("	@GetMapping(\"/"+className.toLowerCase()+"/{id}\")");
 			writer.println("	public ResponseEntity<"+CapitalCase.toCapitalCase(className)+"> get"+CapitalCase.toCapitalCase(className)+"ById(@PathVariable(\"id\")  long id){");
-			writer.println("		"+className.toLowerCase()+"Repository.deleteById(id);");
+			writer.println("		Optional<"+CapitalCase.toCapitalCase(className)+"> "+className.toLowerCase()+"Data = "+className.toLowerCase()+"Repository.findById(id);");
+			writer.println("        if ("+className.toLowerCase()+"Data.isPresent()) {");
+			writer.println("	         return new ResponseEntity<>("+className.toLowerCase()+"Data.get(), HttpStatus.OK);");
+			writer.println("		} else {");
 			writer.println("			return new ResponseEntity<>(HttpStatus.NO_CONTENT);");
+			writer.println("		}");
 			writer.println("	}");
 			writer.println("\n");
 			writer.println("\n");
@@ -150,12 +154,12 @@ public class SBControllerClasses extends AbstractDataAccessObject{
 			
 			writer.println("	@DeleteMapping(\"/"+className.toLowerCase()+"/{id}\")");
 			writer.println("	public ResponseEntity<"+CapitalCase.toCapitalCase(className)+"> delete"+CapitalCase.toCapitalCase(className)+"ById(@PathVariable(\"id\")  long id){");
-			writer.println("		Optional<"+CapitalCase.toCapitalCase(className)+"> "+className.toLowerCase()+" = "+className.toLowerCase()+"Repository.findById(id);");
-			writer.println("			if ("+className.toLowerCase()+".isPresent()) {");
-			writer.println("				return new ResponseEntity<>("+className.toLowerCase()+".get(), HttpStatus.OK);");
-			writer.println("			}else{");
-			writer.println("				return new ResponseEntity<>(HttpStatus.NOT_FOUND); ");
-			writer.println("			}");
+			writer.println("	try {");
+			writer.println("		"+className.toLowerCase()+"Repository.deleteById(id);");
+			writer.println("		return new ResponseEntity<>(HttpStatus.NO_CONTENT);");
+			writer.println("		} catch (Exception e) {");
+			writer.println("			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);");
+			writer.println("		}");
 			writer.println("}");
 			writer.println("\n");
 			writer.println("\n");

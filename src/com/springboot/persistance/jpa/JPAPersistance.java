@@ -32,9 +32,11 @@ import com.jsp.impl.JspImpl;
 import com.menu.impl.MenuImpl;
 import com.service.impl.ServiceImpl;
 import com.servlet.impl.ServletImpl;
+import com.springboot.aop.AopLogingImpl;
 import com.springboot.controller.SBControllerClasses;
 import com.springboot.entity.SBEntities;
 import com.springboot.main.SBMainClass;
+import com.springboot.pom.POMImpl;
 import com.support.impl.SecurityImpl;
 import com.support.impl.SupportImpl;
 import com.util.impl.InitServletImpl;
@@ -62,6 +64,8 @@ public class JPAPersistance extends AbstractDataAccessObject {
 	MenuImpl menuImpl = new MenuImpl(pack, title);
 	CSSImpl cssImpl = new CSSImpl(pack, title);
 	SupportImpl supportImpl = new SupportImpl(pack);
+	POMImpl pomImpl = new POMImpl(pack);
+	AopLogingImpl aopLogingImpl = new AopLogingImpl();
 	SecurityImpl securityImpl = new SecurityImpl(pack);
 	WebXmlImpl webXmlImpl = new WebXmlImpl(pack,title);
 	Map<String, Map<String, String>> outerMap = new HashMap<String, Map<String, String>>();
@@ -84,8 +88,11 @@ public class JPAPersistance extends AbstractDataAccessObject {
 			System.out.println("Schema Name : " + databaseMetaData.getUserName());
 
 			  tableTypes = databaseMetaData.getTableTypes();
-			  //new UtilImpl(pack,title).createUtilityClass();
+			//  new UtilImpl(pack,title).createUtilityClass();
+			new SBMainClass().createSpringBootMainClass(projectName);
 			supportImpl.createSupportImplClasses(resourcePackage);
+			pomImpl.createPomXml(resourcePackage);
+			aopLogingImpl.createAopLoging(projectName);
 			String catalog = con.getCatalog();
 			
 			while (tableTypes.next()) {
@@ -140,7 +147,6 @@ public class JPAPersistance extends AbstractDataAccessObject {
 	}
 
 	public void springBootOperations(String tableName,DatabaseMetaData databaseMetaData) throws SQLException {
-		new SBMainClass().createSpringBootMainClass(projectName);
 		new SBControllerClasses().createControlerImplMethods(tableName, con,title,pack,projectName);
 		new SBEntities().createEntityClasses(tableName,con,pack,schemaName,projectName);
 		new SBJPARepositories().createJPAPersistance(tableName,con,pack,schemaName,projectName);

@@ -61,20 +61,17 @@ public class SBEntities {
 			writer.println("@Table(name = \""+tableName+"\")");
 			writer.println("public class " + CapitalCase.toCapitalCase(tableName) + " implements Serializable {");
 			writer.println("\n");
-			writer.println("	private static final long serialVersionUID = 1L;\n");
-			writer.println("\n");
-			
+			writer.println("		private static final long serialVersionUID = 1L;\n");
 			writer.println("		@Id");
 			writer.println("		@GeneratedValue(strategy = GenerationType.AUTO)");
 			writer.println("		private "
 							+ SqlDatatypeTOJavaWrapperClass.toWrapperClass(columnMetaData.getColumnTypeName(1))  + " "
-							+ columnMetaData.getColumnName(1).toLowerCase() + ";");
-			
+							+ columnMetaData.getColumnName(1).toLowerCase() + ";\n");
 
 			for (int i = 2; i <= columnCount; i++) {
 				String name = columnMetaData.getColumnName(i);
-				writer.println("	@Column(name = \""+name.toLowerCase()+"\")");
-				writer.println("	private "
+				writer.println("		@Column(name = \""+name.toLowerCase()+"\")");
+				writer.println("		private "
 						+ SqlDatatypeTOJavaWrapperClass.toWrapperClass(columnMetaData.getColumnTypeName(i))  + " "
 						+ name.toLowerCase() + ";\n");
 			}

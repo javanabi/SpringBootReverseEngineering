@@ -36,12 +36,12 @@ public class SupportImpl {
 			if(!title.exists())
 				title.mkdir();
 			
-			//File packageDir = new File(".\\sbsupport\\project");
-			//File destDir = new File(".\\"+title);
-			//FileUtils.copyDirectory(packageDir, destDir);
+			File packageDir = new File(".\\sbsupport\\project");
+			File destDir = new File(".\\"+title);
+			FileUtils.copyDirectory(packageDir, destDir);
 			
 			File srcProperties = new File(".\\sbapplicationproperties\\");
-			File destProperties = new File(".\\"+resourcePackage);
+			File destProperties = new File(resourcePackage);
 			FileUtils.copyDirectory(srcProperties, destProperties);
 
 		} catch (Exception e) {

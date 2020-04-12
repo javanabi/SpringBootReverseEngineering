@@ -16,23 +16,70 @@ public class CreateSpringBootProject {
 		String repositoryPackage = ReadProjectPropertiesFile.projectProps.getProperty("repositoryPackage");
 		String pack = ReadProjectPropertiesFile.projectProps.getProperty("pack");
 		
-		String srcPackage = ".\\"+title+"\\src\\main\\java\\";
+		String srcPackage = ".\\"+title;
 		File projectName = new File(srcPackage);
 		if(!projectName.exists())
 			projectName.mkdir();
 		
-		String resourcePackage = ".\\"+title+"\\src\\main\\resources\\";
+		srcPackage = projectName.getAbsolutePath()+"\\src";
+		projectName = new File(srcPackage);
+		if(!projectName.exists())
+			projectName.mkdir();
+		
+		srcPackage = projectName.getAbsolutePath()+"\\main";
+		projectName = new File(srcPackage);
+		if(!projectName.exists())
+			projectName.mkdir();
+		
+		srcPackage = projectName.getAbsolutePath()+"\\java";
+		projectName = new File(srcPackage);
+		if(!projectName.exists())
+			projectName.mkdir();
+		
+		
+		
+		String resourcePackage = ".\\"+title;
 		File resourceName = new File(resourcePackage);
 		if(!resourceName.exists())
 			resourceName.mkdir();
 		
-		String testPackage = ".\\"+title+"\\src\\test\\java\\";
+		resourcePackage = resourceName.getAbsolutePath()+"\\src";
+		resourceName = new File(resourcePackage);
+		if(!resourceName.exists())
+			resourceName.mkdir();
+		
+		resourcePackage = resourceName.getAbsolutePath()+"\\main";
+		resourceName = new File(resourcePackage);
+		if(!resourceName.exists())
+			resourceName.mkdir();
+		
+		resourcePackage = resourceName.getAbsolutePath()+"\\resources";
+		resourceName = new File(resourcePackage);
+		if(!resourceName.exists())
+			resourceName.mkdir();
+		
+		String testPackage = ".\\"+title+"";
 		File testName = new File(testPackage);
 		if(!testName.exists())
 			testName.mkdir();
 		
+		testPackage = testName.getAbsolutePath()+"\\src";
+		testName = new File(resourcePackage);
+		if(!testName.exists())
+			testName.mkdir();
+		
+		testPackage = testName.getAbsolutePath()+"\\test";
+		testName = new File(resourcePackage);
+		if(!testName.exists())
+			testName.mkdir();
+		
+		testPackage = testName.getAbsolutePath()+"\\java";
+		testName = new File(resourcePackage);
+		if(!testName.exists())
+			testName.mkdir();
+		
 		dBPropertiesFileRead.readFile();
-		new JPAPersistance(srcPackage,resourcePackage).readDataBaseDetails();
+		new JPAPersistance(projectName.getAbsolutePath(),resourceName.getAbsolutePath()).readDataBaseDetails();
 		System.out.println("Project created successfully");
 	}
 }
