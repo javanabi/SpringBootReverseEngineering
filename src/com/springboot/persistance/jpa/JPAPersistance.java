@@ -7,7 +7,6 @@
 package com.springboot.persistance.jpa;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -15,15 +14,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.css.impl.CSSImpl;
-import com.exception.impl.ExceptionImpl;
 import com.jdbc.dao.AbstractDataAccessObject;
 import com.jdbc.main.CapitalCase;
 import com.jdbc.main.ListOfDateString;
@@ -37,10 +33,11 @@ import com.springboot.controller.SBControllerClasses;
 import com.springboot.entity.SBEntities;
 import com.springboot.main.SBMainClass;
 import com.springboot.pom.POMImpl;
+import com.springboot.project.properties.ReadProjectPropertiesFile;
+import com.springboot.service.SBServiceClasses;
 import com.support.impl.SecurityImpl;
 import com.support.impl.SupportImpl;
 import com.util.impl.InitServletImpl;
-import com.util.impl.UtilImpl;
 import com.xml.impl.WebXmlImpl;
 
 /**
@@ -76,7 +73,7 @@ public class JPAPersistance extends AbstractDataAccessObject {
 		con = getConnection();
 	}
 
-	public boolean readDataBaseDetails() {
+	public boolean readDataBaseDetails() throws Exception {
 		try {
 
 			DatabaseMetaData databaseMetaData = con.getMetaData();
@@ -146,8 +143,10 @@ public class JPAPersistance extends AbstractDataAccessObject {
 		return flag;
 	}
 
-	public void springBootOperations(String tableName,DatabaseMetaData databaseMetaData) throws SQLException {
-		new SBControllerClasses().createControlerImplMethods(tableName, con,title,pack,projectName);
+	public void springBootOperations(String tableName,DatabaseMetaData databaseMetaData) throws Exception {
+		if(!ReadProjectPropertiesFile.projectProps.getProperty("data-rest-api-starter-template").equals("1")) 
+			new SBControllerClasses().createControlerImplMethods(tableName, con,title,pack,projectName);
+
 		new SBEntities().createEntityClasses(tableName,con,pack,schemaName,projectName);
 		new SBJPARepositories().createJPAPersistance(tableName,con,pack,schemaName,projectName);
 		//prepareDatabaseConnectionClass();

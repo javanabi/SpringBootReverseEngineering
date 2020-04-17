@@ -23,9 +23,17 @@ public class SqlDatatypeTOJavaWrapperClass {
 			return "Long";
 		} else if ("BIT".equalsIgnoreCase(sqlDatatype)) {
 			return "boolean";
-		} else {
+		} 
+		//Mysql
+		else if ("Int".equalsIgnoreCase(sqlDatatype)) {
+			return "Long";
+		} 
+		else {
 			return "String";
 		}
+		
+		//Mysql
+		
 		
 	}
 

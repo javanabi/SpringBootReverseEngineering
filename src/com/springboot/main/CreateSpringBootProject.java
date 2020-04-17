@@ -79,7 +79,12 @@ public class CreateSpringBootProject {
 			testName.mkdir();
 		
 		dBPropertiesFileRead.readFile();
-		new JPAPersistance(projectName.getAbsolutePath(),resourceName.getAbsolutePath()).readDataBaseDetails();
+		try {
+			new JPAPersistance(projectName.getAbsolutePath(),resourceName.getAbsolutePath()).readDataBaseDetails();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		System.out.println("Project created successfully");
 	}
 }

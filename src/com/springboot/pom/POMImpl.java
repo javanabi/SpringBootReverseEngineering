@@ -53,6 +53,14 @@ public class POMImpl {
 			writer.println("	</properties>");
 			writer.println("");
 			writer.println("	<dependencies>");
+			
+			if(ReadProjectPropertiesFile.projectProps.getProperty("data-rest-api-starter-template").equals("1")) {
+				writer.println("		<dependency>");
+				writer.println("			<groupId>org.springframework.boot</groupId>");
+				writer.println("			<artifactId>spring-boot-starter-data-rest</artifactId>");
+				writer.println("		</dependency>");
+			}
+			
 			writer.println("		<dependency>");
 			writer.println("			<groupId>org.springframework.boot</groupId>");
 			writer.println("			<artifactId>spring-boot-starter-data-jpa</artifactId>");
