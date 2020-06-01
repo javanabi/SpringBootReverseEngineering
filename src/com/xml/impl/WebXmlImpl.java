@@ -16,7 +16,7 @@ import java.util.Vector;
 import com.jdbc.dao.AbstractDataAccessObject;
 import com.jdbc.main.CapitalCase;
 import com.jdbc.main.SqlDatatypeTOJavaWrapperClass;
-import com.util.impl.UtilImpl;
+import com.springboot.util.UtilImpl;
 
 public class WebXmlImpl extends AbstractDataAccessObject{
 	

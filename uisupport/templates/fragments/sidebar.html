@@ -1,0 +1,48 @@
+<div class="sidebar" data-background-color="white" data-active-color="danger">
+
+    <!--
+        Tip 1: you can change the color of the sidebar's background using: data-background-color="white | black"
+        Tip 2: you can change the color of the active button using the data-active-color="primary | info | success | warning | danger"
+    -->
+
+    <div class="sidebar-wrapper">
+        <div class="logo">
+            <a th:href="@{/books}" class="simple-text">
+                Books Manager
+            </a>
+        </div>
+
+        <ul class="nav">
+            <li>
+                <a th:href="@{/books/viewAllBooks}">
+                    <i class="ti-book"></i>
+                    <p>Books</p>
+                </a>
+            </li>
+            <li sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/books/addBook}">
+                    <i class="ti-plus"></i>
+                    <p>Add Book</p>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/categories}">
+                    <i class="ti-folder"></i>
+                    <p>Categories</p>
+                </a>
+            </li>
+            <li sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/category/create}">
+                    <i class="ti-plus"></i>
+                    <p>Add Category</p>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/logout}">
+                    <i class="ti-plus"></i>
+                    <p>Logout</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

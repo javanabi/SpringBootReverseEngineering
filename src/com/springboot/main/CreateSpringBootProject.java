@@ -35,9 +35,7 @@ public class CreateSpringBootProject {
 		projectName = new File(srcPackage);
 		if(!projectName.exists())
 			projectName.mkdir();
-		
-		
-		
+				
 		String resourcePackage = ".\\"+title;
 		File resourceName = new File(resourcePackage);
 		if(!resourceName.exists())
@@ -80,7 +78,7 @@ public class CreateSpringBootProject {
 		
 		dBPropertiesFileRead.readFile();
 		try {
-			new JPAPersistance(projectName.getAbsolutePath(),resourceName.getAbsolutePath()).readDataBaseDetails();
+			new JPAPersistance(projectName.getAbsolutePath(),resourceName.getAbsolutePath(),srcPackage).readDataBaseDetails();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

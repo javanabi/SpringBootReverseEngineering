@@ -19,7 +19,7 @@ public class POMImpl {
 		try {
 			String title = ReadProjectPropertiesFile.projectProps.getProperty("title");
 			String pack = ReadProjectPropertiesFile.projectProps.getProperty("pack");
-
+			
 			String packageNameString = ".\\"+title;
 			File packageDir = new File(packageNameString);
 			packageDir.mkdir();
@@ -43,13 +43,18 @@ public class POMImpl {
 			writer.println("		<relativePath/> <!-- lookup parent from repository -->");
 			writer.println("	</parent>");
 			writer.println("	<groupId>com."+pack+"</groupId>");
-			writer.println("	<artifactId>spring-boot-data-jpa</artifactId>");
+			writer.println("	<artifactId>"+title+"</artifactId>");
 			writer.println("	<version>0.0.1-SNAPSHOT</version>");
-			writer.println("	<name>spring-boot-data-jpa</name>");
+			writer.println("	<name>"+title+"</name>");
 			writer.println("	<description>Demo project for Spring Boot Apis CRUD using Spring Data JPA</description>");
 			writer.println("");
 			writer.println("	<properties>");
 			writer.println("		<java.version>1.8</java.version>");
+			if(ReadProjectPropertiesFile.projectProps.getProperty("date-picker").equals("1")) {
+				writer.println("<bootstrap.version>4.0.0-2</bootstrap.version>");
+				writer.println("<webjars-locator.version>0.30</webjars-locator.version>");
+				writer.println("<font-awesome.version>5.11.2</font-awesome.version>");
+			}
 			writer.println("	</properties>");
 			writer.println("");
 			writer.println("	<dependencies>");
@@ -77,6 +82,60 @@ public class POMImpl {
 				writer.println("			<artifactId>spring-boot-starter-security</artifactId>");
 				writer.println("		</dependency>");
 			}
+			if(ReadProjectPropertiesFile.projectProps.getProperty("thymeleaf-controllers").equals("1")) {
+				writer.println("		<dependency>");
+				writer.println("			<groupId>org.springframework.boot</groupId>");
+				writer.println("			<artifactId>spring-boot-starter-thymeleaf</artifactId>");
+				writer.println("		</dependency>");
+				if(ReadProjectPropertiesFile.projectProps.getProperty("default-security").equals("1")) 
+					{	
+						writer.println("		<dependency>");
+						writer.println("			<groupId>org.thymeleaf.extras</groupId>");
+						writer.println("			<artifactId>thymeleaf-extras-springsecurity5</artifactId>");
+						writer.println("		</dependency>");
+					}
+				writer.println("		<dependency>");
+				writer.println("			<groupId>nz.net.ultraq.thymeleaf</groupId>");
+				writer.println("			<artifactId>thymeleaf-layout-dialect</artifactId>");
+				writer.println("		</dependency>");
+			}
+			if(ReadProjectPropertiesFile.projectProps.getProperty("date-picker").equals("1")) {
+				writer.println("	<dependency>");
+				writer.println("		<groupId>org.webjars</groupId>");
+				writer.println("		<artifactId>bootstrap</artifactId>");
+				writer.println("		<version>${bootstrap.version}</version>");
+				writer.println("	</dependency>");
+				writer.println("");
+				writer.println("	<dependency>");
+				writer.println("		<groupId>org.webjars</groupId>");
+				writer.println("		<artifactId>webjars-locator</artifactId>");
+				writer.println("		<version>${webjars-locator.version}</version>");
+				writer.println("	</dependency>");
+				writer.println("");
+				writer.println("	<dependency>");
+				writer.println("		<groupId>org.webjars</groupId>");
+				writer.println("		<artifactId>font-awesome</artifactId>");
+				writer.println("		<version>${font-awesome.version}</version>");
+				writer.println("	</dependency>");
+			}
+			if(ReadProjectPropertiesFile.projectProps.getProperty("change-pass-feature").equals("1")) {
+				writer.println("		<dependency>");
+				writer.println("			<groupId>org.springframework.boot</groupId>");
+				writer.println("			<artifactId>spring-boot-starter-mail</artifactId>");
+				writer.println("		</dependency>");
+				writer.println("		<!-- https://mvnrepository.com/artifact/org.passay/passay -->");
+				writer.println("		<dependency>");
+				writer.println("		    <groupId>org.passay</groupId>");
+				writer.println("		    <artifactId>passay</artifactId>");
+				writer.println("		    <version>1.0</version>");
+				writer.println("		</dependency>");
+				writer.println("		<dependency>");
+				writer.println("			<groupId>com.google.guava</groupId>");
+				writer.println("			<artifactId>guava</artifactId>");
+				writer.println("			<version>r05</version>");
+				writer.println("		</dependency>");
+			}
+			
 			if(ReadProjectPropertiesFile.projectProps.getProperty("sb-aop").equals("1")) {
 				writer.println("		<dependency>");
 				writer.println("			<groupId>org.springframework.boot</groupId>");

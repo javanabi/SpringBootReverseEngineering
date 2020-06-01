@@ -1,7 +1,7 @@
-# Spring Boot JPA MySQL - Building Rest CRUD API example
+# Spring Boot JPA MySQL - Building Application
 
 For more detail, please visit:
-> [Spring Boot JPA - Building Rest CRUD API example](https://bezkoder.com/spring-boot-jpa-crud-rest-api/)
+> [Spring Boot JPA - Building Application]
 
 ## Run Spring Boot application
 ```

@@ -32,6 +32,7 @@ public class SBControllerClasses extends AbstractDataAccessObject{
 			String basePackage = ReadProjectPropertiesFile.projectProps.getProperty("basePackage");
 			String beanPackage = ReadProjectPropertiesFile.projectProps.getProperty("beanPackage");
 			String repositoryPackage = ReadProjectPropertiesFile.projectProps.getProperty("repositoryPackage");
+			String servicePackage = ReadProjectPropertiesFile.projectProps.getProperty("servicePackage");
 			
 			String packageNameString = projectName+"\\"+basePackage+"\\";
 			File packageDir = new File(packageNameString);
@@ -67,8 +68,7 @@ public class SBControllerClasses extends AbstractDataAccessObject{
 			packageImport += "import org.springframework.web.bind.annotation.RestController;\n";
 
 			packageImport += "import "+basePackage+"."+pack+"."+beanPackage+"."+CapitalCase.toCapitalCase(className)+";\n";
-			packageImport += "import "+basePackage+"."+pack+"."+repositoryPackage+"."+CapitalCase.toCapitalCase(className)+"Repository;\n";
-			
+			packageImport += "import "+basePackage+"."+pack+"."+servicePackage+"."+CapitalCase.toCapitalCase(className)+"ServiceImpl;\n";
 			
 			/*DatabaseMetaData databaseMetaData = con.getMetaData();
 			String cataLog = con.getCatalog();
@@ -92,90 +92,71 @@ public class SBControllerClasses extends AbstractDataAccessObject{
 			writer.println("@RestController");
 			writer.println("@RequestMapping(\"/api\")");
 			writer.println("public class "
-					+ CapitalCase.toCapitalCase(className) + "Controller{\n\n\n");
-			writer.println("     @Autowired");
-			writer.println("     "+CapitalCase.toCapitalCase(className)+"Repository "+className.toLowerCase()+"Repository;\n\n");
+					+ CapitalCase.toCapitalCase(className) + "Controller{\n");
+			writer.println("	@Autowired");
+			writer.println("	"+CapitalCase.toCapitalCase(className)+"ServiceImpl "+className.toLowerCase()+"ServiceImpl;\n");
 			
 			writer.println("	@GetMapping(\"/"+className.toLowerCase()+"\")");
 			writer.println("	public ResponseEntity<List<"+CapitalCase.toCapitalCase(className)+">> getAll"+CapitalCase.toCapitalCase(className)+"(@RequestParam(required = false) String title){");
 			writer.println("		try {");
-			writer.println("		List<"+CapitalCase.toCapitalCase(className)+"> "+className.toLowerCase()+" = new ArrayList<>();");
-			writer.println("			if (title == null)");
-			writer.println("					"+className.toLowerCase()+"Repository.findAll().forEach("+className.toLowerCase()+"::add);");
-			//writer.println("			else");
-			//writer.println("					"+className.toLowerCase()+"Repository.findByTitleContaining(title).forEach("+className.toLowerCase()+"::add);");
-			writer.println("\n");
+			writer.println("			List<"+CapitalCase.toCapitalCase(className)+">	"+className.toLowerCase()+" = "+className.toLowerCase()+"ServiceImpl.getAll"+CapitalCase.toCapitalCase(className)+"(title);");
 			writer.println("			if ("+className.toLowerCase()+".isEmpty())");
 			writer.println("				return new ResponseEntity<>(HttpStatus.NO_CONTENT);");
-			writer.println("\n");
      		writer.println("			return new ResponseEntity<>("+className.toLowerCase()+", HttpStatus.OK);");
 	    	writer.println("		} catch (Exception e) {");
 			writer.println("			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);");
 			writer.println("		}");
 			writer.println("	}");
 			writer.println("\n");
-			writer.println("\n");
 			
 			writer.println("	@GetMapping(\"/"+className.toLowerCase()+"/{id}\")");
-			writer.println("	public ResponseEntity<"+CapitalCase.toCapitalCase(className)+"> get"+CapitalCase.toCapitalCase(className)+"ById(@PathVariable(\"id\")  long id){");
-			writer.println("		Optional<"+CapitalCase.toCapitalCase(className)+"> "+className.toLowerCase()+"Data = "+className.toLowerCase()+"Repository.findById(id);");
-			writer.println("        if ("+className.toLowerCase()+"Data.isPresent()) {");
-			writer.println("	         return new ResponseEntity<>("+className.toLowerCase()+"Data.get(), HttpStatus.OK);");
-			writer.println("		} else {");
+			writer.println("	public ResponseEntity<"+CapitalCase.toCapitalCase(className)+"> get"+CapitalCase.toCapitalCase(className)+"(@PathVariable(\"id\")  long id){");
+			writer.println("		try {");
+			writer.println("	         return new ResponseEntity<>("+className.toLowerCase()+"ServiceImpl.get"+CapitalCase.toCapitalCase(className)+"(id), HttpStatus.OK);");
+			writer.println("		}catch(Exception e){");
 			writer.println("			return new ResponseEntity<>(HttpStatus.NO_CONTENT);");
 			writer.println("		}");
 			writer.println("	}");
 			writer.println("\n");
-			writer.println("\n");
-			
 			writer.println("	@PostMapping(\"/"+className.toLowerCase()+"\")");
 			writer.println("	public ResponseEntity<"+CapitalCase.toCapitalCase(className)+"> add"+CapitalCase.toCapitalCase(className)+"(@RequestBody "+CapitalCase.toCapitalCase(className)+" "+className.toLowerCase()+"){");
 			writer.println("		try {");
-			writer.println("			"+CapitalCase.toCapitalCase(className)+" "+className.toLowerCase()+"Res = "+className.toLowerCase()+"Repository.save("+className.toLowerCase()+");");
+			writer.println("			"+CapitalCase.toCapitalCase(className)+" "+className.toLowerCase()+"Res = "+className.toLowerCase()+"ServiceImpl.add"+CapitalCase.toCapitalCase(className)+"("+className.toLowerCase()+");");
      		writer.println("				return new ResponseEntity<>("+className.toLowerCase()+"Res, HttpStatus.OK);");
 	    	writer.println("			} catch (Exception e) {");
 			writer.println("				return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);");
 			writer.println("			}");
 			writer.println("	}");
 			writer.println("\n");
-			writer.println("\n");
-			
 			writer.println("	@PutMapping(\"/"+className.toLowerCase()+"/{id}\")");
 			writer.println("	public ResponseEntity<"+CapitalCase.toCapitalCase(className)+"> update"+CapitalCase.toCapitalCase(className)+"(@PathVariable(\"id\") long id,@RequestBody "+CapitalCase.toCapitalCase(className)+" "+className.toLowerCase()+"){");
 			writer.println("		try {");
-			writer.println("		"+CapitalCase.toCapitalCase(className)+" "+className.toLowerCase()+"Res = "+className.toLowerCase()+"Repository.save("+className.toLowerCase()+");");
+			writer.println("		"+CapitalCase.toCapitalCase(className)+" "+className.toLowerCase()+"Res = "+className.toLowerCase()+"ServiceImpl.update"+CapitalCase.toCapitalCase(className)+"(id,"+className.toLowerCase()+");");
      		writer.println("				return new ResponseEntity<>("+className.toLowerCase()+"Res, HttpStatus.OK);");
 	    	writer.println("			} catch (Exception e) {");
 			writer.println("				return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);");
 			writer.println("			}");
 			writer.println("	}");
 			writer.println("\n");
-			writer.println("\n");
-			
 			writer.println("	@DeleteMapping(\"/"+className.toLowerCase()+"/{id}\")");
 			writer.println("	public ResponseEntity<"+CapitalCase.toCapitalCase(className)+"> delete"+CapitalCase.toCapitalCase(className)+"ById(@PathVariable(\"id\")  long id){");
 			writer.println("	try {");
-			writer.println("		"+className.toLowerCase()+"Repository.deleteById(id);");
+			writer.println("		"+className.toLowerCase()+"ServiceImpl.delete"+CapitalCase.toCapitalCase(className)+"(id);");
 			writer.println("		return new ResponseEntity<>(HttpStatus.NO_CONTENT);");
 			writer.println("		} catch (Exception e) {");
 			writer.println("			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);");
 			writer.println("		}");
 			writer.println("}");
 			writer.println("\n");
-			writer.println("\n");
-			
 			writer.println("	@DeleteMapping(\"/"+className.toLowerCase()+"\")");
 			writer.println("	public ResponseEntity<"+CapitalCase.toCapitalCase(className)+"> deleteAll"+CapitalCase.toCapitalCase(className)+"(){");
 			writer.println("    try {");
-			writer.println("		"+className.toLowerCase()+"Repository.deleteAll();");
+			writer.println("		"+className.toLowerCase()+"ServiceImpl.deleteAll"+CapitalCase.toCapitalCase(className)+"();");
 			writer.println("			return new ResponseEntity<>(HttpStatus.NO_CONTENT);");
 			writer.println("     } catch (Exception e) {");
 			writer.println("		return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);");
 			writer.println("    }");
 			writer.println(" }");
-			writer.println("\n");
-			writer.println("\n");
-			
 			writer.println("}");
 			writer.close();
 			

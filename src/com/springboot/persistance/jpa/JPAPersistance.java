@@ -16,28 +16,35 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.css.impl.CSSImpl;
 import com.jdbc.dao.AbstractDataAccessObject;
 import com.jdbc.main.CapitalCase;
 import com.jdbc.main.ListOfDateString;
 import com.jdbc.main.SqlDatatypeTOJavaWrapperClass;
-import com.jsp.impl.JspImpl;
-import com.menu.impl.MenuImpl;
 import com.service.impl.ServiceImpl;
 import com.servlet.impl.ServletImpl;
 import com.springboot.aop.AopLogingImpl;
 import com.springboot.controller.SBControllerClasses;
+import com.springboot.controller.SBThymeleafControllerClasses;
 import com.springboot.entity.SBEntities;
+import com.springboot.exception.ExceptionImpl;
 import com.springboot.main.SBMainClass;
+import com.springboot.menuimpl.ThymeLeafMenuImpl;
 import com.springboot.pom.POMImpl;
 import com.springboot.project.properties.ReadProjectPropertiesFile;
+import com.springboot.securityimpl.SpringBootSecurityImpl;
 import com.springboot.service.SBServiceClasses;
-import com.support.impl.SecurityImpl;
-import com.support.impl.SupportImpl;
-import com.util.impl.InitServletImpl;
+import com.springboot.service.SBServiceInterface;
+import com.springboot.supportfiles.SpringBootSupportImpl;
+import com.springboot.uipages.ThymeleafHtmlPagesImpl;
+import com.springboot.util.InitServletImpl;
+import com.springboot.util.SBUtilImpl;
 import com.xml.impl.WebXmlImpl;
 
 /**
@@ -50,27 +57,44 @@ public class JPAPersistance extends AbstractDataAccessObject {
 	ResultSet resultSet,rs,rsf,tableTypes,contraintsRecords;
 	private String desc;
 	private boolean flag;
-	String projectName,resourcePackage;
+	List<String> tableList= readTablesFromPRoperteisFile();
+	
+	String projectName,resourcePackage,srcPackage;
 	String schemaName = getProperties().getProperty("duser");
 	String title = getProperties().getProperty("title");
 	String pack = getProperties().getProperty("pack");
 	ServiceImpl serviceImpl = new ServiceImpl(pack, schemaName);
 	ServletImpl servletImpl = new ServletImpl(pack);
 	InitServletImpl initServletImpl = new InitServletImpl(pack);
-	JspImpl jspImpl = new JspImpl(pack, title);
-	MenuImpl menuImpl = new MenuImpl(pack, title);
+	//ThymeleafHtmlPagesImpl thymeleafHtmlPagesImpl = new ThymeleafHtmlPagesImpl(pack, title);
 	CSSImpl cssImpl = new CSSImpl(pack, title);
-	SupportImpl supportImpl = new SupportImpl(pack);
+	SpringBootSupportImpl supportImpl = new SpringBootSupportImpl(pack);
 	POMImpl pomImpl = new POMImpl(pack);
 	AopLogingImpl aopLogingImpl = new AopLogingImpl();
-	SecurityImpl securityImpl = new SecurityImpl(pack);
+	SpringBootSecurityImpl securityImpl = new SpringBootSecurityImpl(pack);
 	WebXmlImpl webXmlImpl = new WebXmlImpl(pack,title);
 	Map<String, Map<String, String>> outerMap = new HashMap<String, Map<String, String>>();
 	/** Creates a new instance of SecurityDAO */
-	public JPAPersistance(String projectName,String resourcePackage) {
+	public JPAPersistance(String projectName,String resourcePackage,String srcPackage) {
 		this.projectName = projectName;
 		this.resourcePackage = resourcePackage;
+		this.srcPackage = srcPackage;
 		con = getConnection();
+	}
+
+	public static List<String> readTablesFromPRoperteisFile() {
+		return Stream.of(ReadProjectPropertiesFile.projectProps.getProperty("ignore-tables").split(",")).collect(Collectors.toList());
+	}
+
+	public static List<String> basicTableListFromPRoperteisFile() {
+		return Stream.of(ReadProjectPropertiesFile.projectProps.getProperty("basic-table-list").split(",")).collect(Collectors.toList());
+	}
+	
+	public static List<String> tablesListTODO(String propertyKey) {
+		return Stream.of(ReadProjectPropertiesFile.projectProps.getProperty(propertyKey).split(",")).collect(Collectors.toList());
+	}
+	public static List<String> nottoDisplayColumnNamesFromPRoperteisFile() {
+		return Stream.of(ReadProjectPropertiesFile.projectProps.getProperty("notto-display-colnames").split(",")).collect(Collectors.toList());
 	}
 
 	public boolean readDataBaseDetails() throws Exception {
@@ -85,9 +109,10 @@ public class JPAPersistance extends AbstractDataAccessObject {
 			System.out.println("Schema Name : " + databaseMetaData.getUserName());
 
 			  tableTypes = databaseMetaData.getTableTypes();
-			//  new UtilImpl(pack,title).createUtilityClass();
+			new SBUtilImpl(pack,title).createUtilityClass(projectName);
 			new SBMainClass().createSpringBootMainClass(projectName);
-			supportImpl.createSupportImplClasses(resourcePackage);
+			new SBServiceInterface().createServiceInterface(title,pack,projectName);
+			supportImpl.createSupportImplClasses(resourcePackage,srcPackage);
 			pomImpl.createPomXml(resourcePackage);
 			aopLogingImpl.createAopLoging(projectName);
 			String catalog = con.getCatalog();
@@ -118,23 +143,25 @@ public class JPAPersistance extends AbstractDataAccessObject {
 					break;
 				}
 			}
-			
 			 tableTypes = databaseMetaData.getTableTypes();
 			while (tableTypes.next()) {
 				if ("TABLE".equalsIgnoreCase(tableTypes.getString("TABLE_TYPE"))) {
 					  rs = databaseMetaData.getTables(null, databaseMetaData.getUserName(), "%",
 							new String[] { "TABLE" });
 					while (rs.next()) {
-						springBootOperations(rs.getString("TABLE_NAME"),databaseMetaData);
+						String tableName = rs.getString("TABLE_NAME");
+						
+						if(!tableList.contains(tableName.toLowerCase()))
+						springBootOperations(tableName,databaseMetaData);
 					}
 					break;
 
 				}
 			}
 
+			new ThymeLeafMenuImpl(pack, title,resourcePackage).createMenuFiles(con);
 			//webXmlImpl.createWebXmlFile(con);
-			//securityImpl.createSecurityImplClasses(con, title);;
-			//menuImpl.createMenuFiles(con);
+			securityImpl.createSecurityImplClasses(con,srcPackage, ReadProjectPropertiesFile.projectProps.getProperty("database-login-table"));
 			//cssImpl.createCSSFile1(con);
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -144,18 +171,22 @@ public class JPAPersistance extends AbstractDataAccessObject {
 	}
 
 	public void springBootOperations(String tableName,DatabaseMetaData databaseMetaData) throws Exception {
-		if(!ReadProjectPropertiesFile.projectProps.getProperty("data-rest-api-starter-template").equals("1")) 
+		if(ReadProjectPropertiesFile.projectProps.getProperty("thymeleaf-controllers").equals("1"))
+			new SBThymeleafControllerClasses().createControlerImplMethods(tableName, con,title,pack,projectName);
+		else if(!ReadProjectPropertiesFile.projectProps.getProperty("data-rest-api-starter-template").equals("1"))
 			new SBControllerClasses().createControlerImplMethods(tableName, con,title,pack,projectName);
-
+		new SBServiceInterface().createAllServiceInterfaces(tableName,title,pack,projectName);
+		new SBServiceClasses().createServiceImplMethods(con,tableName,title,pack,projectName);
 		new SBEntities().createEntityClasses(tableName,con,pack,schemaName,projectName);
 		new SBJPARepositories().createJPAPersistance(tableName,con,pack,schemaName,projectName);
+		new ExceptionImpl().createExceptionClasses(tableName,projectName);
+		new ThymeleafHtmlPagesImpl(pack, title,resourcePackage).createThymeLeafImpPages(tableName, con,outerMap);
 		//prepareDatabaseConnectionClass();
 		//createPropertiesFile();
 	//	createDateWraperClass();
-		//new ExceptionImpl(pack).createExceptionClasses(tableName);
 		//serviceImpl.createServiceImplClasses(tableName, con);
 		//Map<String, Map<String, String>> listOfForeignKeys = jspImpl.getAllForiegnKeys(con);
-		//jspImpl.createJSPImplClasses(tableName, con,outerMap);
+		
 	}
 
 	private void createPropertiesFile() {
