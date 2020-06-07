@@ -13,23 +13,13 @@ h4.title {
     text-align: center; 
     width: 100%; 
     color: #fff;
-    background-color: #000;
+    background-color: #337ab7;
     border-color: #337ab7;
 }
- .btn-primary {
-    color: #fff;
-    background-color: #000;
-    border-color: #000;
-}
-
-.panel-primary>.panel-heading {
-    color: #fff;
-    background-color: #000;
-    border-color: #000;
-}
+ 
 
 thead { 
     padding: 8px;
     color: white;
-    background-color: #000; 
+    background-color: #337ab7; 
 }

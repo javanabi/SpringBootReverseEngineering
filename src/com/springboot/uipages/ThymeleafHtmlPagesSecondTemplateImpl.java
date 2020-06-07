@@ -21,7 +21,7 @@ import com.springboot.persistance.jpa.JPAPersistance;
 import com.springboot.project.properties.ReadProjectPropertiesFile;
 import com.springboot.util.InputNamesFileRead;
 
-public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
+public class ThymeleafHtmlPagesSecondTemplateImpl extends AbstractDataAccessObject {
 
 	PreparedStatement pstmt;
 	String pack, resourcePackage;
@@ -34,7 +34,7 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 	List<String> basicTableList= JPAPersistance.basicTableListFromPRoperteisFile();
 	
 	Set<String> inputNames = InputNamesFileRead.inputNames;
-	public ThymeleafHtmlPagesImpl(String pack, String title,String resourcePackage) {
+	public ThymeleafHtmlPagesSecondTemplateImpl(String pack, String title,String resourcePackage) {
 		super();
 		this.pack = pack;
 		this.title = title;
@@ -152,7 +152,7 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 		return outerMap;
 	}
 
-	public void createThymeLeafImpPages(String className, Connection con,
+	public void createThymeLeafSecondTemplatePages(String className, Connection con,
 			Map<String, Map<String, String>> listOfForeignKeys) throws SQLException {
 		try {
 			pstmt = con.prepareStatement("select * from " + className);
@@ -175,19 +175,16 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 			writer.println("<!DOCTYPE html>");
 			writer.println("<html lang=\"en\" xmlns:th=\"http://www.thymeleaf.org\">");
 			writer.println("<th:block th:include=\"fragments/head\"></th:block>");
-			writer.println("<body>");
+			writer.println("<body class=\""+cssTitle+"-black\">");
 			writer.println("	<!-- Page Wrapper -->");
-			writer.println("	<div id=\"wrapper\">");
 			writer.println("		<th:block th:include=\"fragments/sidebar\"></th:block>");
 			writer.println("		<!-- Main Panel -->");
-			writer.println("		<div class=\"main-panel\">");
-			writer.println("			<th:block th:include=\"fragments/navbar\"></th:block>");
-			writer.println("			<!-- Begin Page Content -->");
-			writer.println("			<div class=\"content\">");
-			writer.println("				<div class=\"container-fluid\">");
-			writer.println("					<div class=\"row\">");
-			writer.println("						<div class=\"col-md-12\">");
-			writer.println("							<div class=\"card\">");
+			writer.println("		<div class=\""+cssTitle+"-main\" style=\"margin-left:250px\">");
+			writer.println("  			<div class=\""+cssTitle+"-row "+cssTitle+"-padding-64\">");
+			writer.println("    				<div class=\""+cssTitle+"-twothird "+cssTitle+"-container\">");
+			writer.println("						<div class=\"row\">");
+			writer.println("							<div class=\"col-md-12\">");
+			writer.println("							  <div class=\"card\">");
 			writer.println("								<div class=\"header\">");
 			writer.println("									<h4 class=\"title\">New " + CapitalCase.toCapitalCase(className)+"</h4>");
 			writer.println("								</div>");
@@ -199,7 +196,7 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 			String hiddenColName = columnMetaData.getColumnName(1).toLowerCase();
 			if(isForeignKey(con, className,hiddenColName))
 				hiddenColName = columnMetaData.getColumnName(2).toLowerCase();
-			writer.println("   										 <input type=\"hidden\" class=\"form-control\" th:field=\"*{"+hiddenColName+"}\" />");
+			writer.println("   										 <input type=\"hidden\" class=\" "+cssTitle+"-input "+cssTitle+"-padding-16\" th:field=\"*{"+hiddenColName+"}\" />");
 			writer.println("									    </div>");
 			int columnCount = columnMetaData.getColumnCount();
 			for (int i = 2; i <= columnCount; i++) {
@@ -208,20 +205,20 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 					int coldataTypeSize = columnMetaData.getColumnDisplaySize(i);
 					if(columnMetaData.getColumnTypeName(i).equalsIgnoreCase("LONGBLOB"))
 					 {
-						writer.println("                                        <div class=\"form-group\">");
-						writer.println("	                                        <label for=\"title\">"+CapitalCase.displayColNameASTableHeadColumns(colName.toLowerCase(), className)+"</label> <input type=\"file\"");
-						writer.println("	                                        	class=\"form-control\" id=\""+colName.toLowerCase()+"file\" aria-describedby=\""+colName.toLowerCase()+"file\"");
+						writer.println("                                        <p>");
+						//writer.println("	                                        <label for=\"title\">"+CapitalCase.displayColNameASTableHeadColumns(colName.toLowerCase(), className)+"</label>");
+						writer.println("	                                        <input type=\"file\" class=\" "+cssTitle+"-input "+cssTitle+"-padding-16\" id=\""+colName.toLowerCase()+"file\" aria-describedby=\""+colName.toLowerCase()+"file\"");
 						writer.println("	                                        	th:field=\"*{"+colName.toLowerCase()+"file}\"");
 						writer.println("	                                        	placeholder=\""+CapitalCase.toCapitalCase(colName)+"file\">");
 						writer.println("                                        <span id=\"errorMessage\" th:if=\"${#fields.hasErrors('"+colName.toLowerCase()+"file')}\" th:errors=\"*{"+colName.toLowerCase()+"file}\">"+CapitalCase.toCapitalCase(colName)+"file error</span>");
-						writer.println("                                        </div>");
+						writer.println("                                        </p>");
 						i = i+2;
 					} else if(columnMetaData.getColumnTypeName(i).equalsIgnoreCase("Date") || columnMetaData.getColumnTypeName(i).equalsIgnoreCase("datetime")) { 
-						writer.println("                                        <div class=\"form-group\">");
-						writer.println("	                                        <label for=\"title\">"+CapitalCase.displayColNameASTableHeadColumns(colName.toLowerCase(), className)+"</label>");
+						writer.println("                                        <p>");
+						//writer.println("	                                        <label for=\"title\">"+CapitalCase.displayColNameASTableHeadColumns(colName.toLowerCase(), className)+"</label>");
 						writer.println("											<div class=\"input-group date\">");
-						writer.println("											<input type=\""+CapitalCase.inputType(colName)+"\"");
-						writer.println("	                                        	class=\"form-control\" id=\""+colName.toLowerCase()+"\" aria-describedby=\""+colName.toLowerCase()+"\"");
+						writer.println("											<input class=\""+cssTitle+"-input "+cssTitle+"-padding-16\" type=\""+CapitalCase.inputType(colName)+"\"");
+						writer.println("	                                        	  id=\""+colName.toLowerCase()+"\" aria-describedby=\""+colName.toLowerCase()+"\"");
 						writer.println("	                                        	th:field=\"*{"+colName.toLowerCase()+"}\"");
 						writer.println("	                                        	placeholder=\""+CapitalCase.toCapitalCase(colName)+"\">");
 						writer.println("												<div class=\"input-group-append\">");
@@ -230,24 +227,24 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 						writer.println("												</div>");
 						writer.println("                                        <span id=\"errorMessage\" th:if=\"${#fields.hasErrors('"+colName.toLowerCase()+"')}\" th:errors=\"*{"+colName.toLowerCase()+"}\">"+CapitalCase.toCapitalCase(colName)+" error</span>");
 						writer.println("                                        	</div>");
-						writer.println("                                        </div>");
+						writer.println("                                        </p>");
 					} else if (columnMetaData.getColumnTypeName(i).equalsIgnoreCase("Timestamp")) {
 					} else if(coldataTypeSize>=256) {
-						writer.println("										<div class=\"form-group\">");
-						writer.println("											<label for=\"description\">"+CapitalCase.displayColNameASTableHeadColumns(colName.toLowerCase(), className)+"</label>");
-						writer.println("												<textarea rows=\"4\" type=\"textarea\" class=\"form-control\"");
+						writer.println("										<p>");
+						//writer.println("											<label for=\"description\">"+CapitalCase.displayColNameASTableHeadColumns(colName.toLowerCase(), className)+"</label>");
+						writer.println("												<textarea rows=\"4\" type=\"textarea\" class=\" "+cssTitle+"-input "+cssTitle+"-padding-16\"");
 						writer.println("												id=\""+colName.toLowerCase()+"\" th:field=\"*{"+colName.toLowerCase()+"}\"");
 						writer.println("												placeholder=\"type here ...\" /></textarea>");
 						writer.println("										<span id=\"errorMessage\" th:if=\"${#fields.hasErrors('"+colName.toLowerCase()+"')}\" th:errors=\"*{"+colName.toLowerCase()+"}\">"+colName.toLowerCase()+" error</span>");
-						writer.println("										</div>");
+						writer.println("										</p>");
 					} else {
-						writer.println("                                        <div class=\"form-group\">");
-						writer.println("	                                        <label for=\"title\">"+CapitalCase.displayColNameASTableHeadColumns(colName.toLowerCase(), className)+"</label> <input type=\""+CapitalCase.inputType(colName)+"\"");
-						writer.println("	                                        	class=\"form-control\" id=\""+colName.toLowerCase()+"\" aria-describedby=\""+colName.toLowerCase()+"\"");
+						writer.println("                                        <p>");
+						//writer.println("	                                        <label for=\"title\">"+CapitalCase.displayColNameASTableHeadColumns(colName.toLowerCase(), className)+"</label>");
+						writer.println("	                                        	<input type=\""+CapitalCase.inputType(colName)+"\" class=\" "+cssTitle+"-input "+cssTitle+"-padding-16\" id=\""+colName.toLowerCase()+"\" aria-describedby=\""+colName.toLowerCase()+"\"");
 						writer.println("	                                        	th:field=\"*{"+colName.toLowerCase()+"}\"");
 						writer.println("	                                        	placeholder=\""+CapitalCase.toCapitalCase(colName)+"\">");
 						writer.println("                                        <span id=\"errorMessage\" th:if=\"${#fields.hasErrors('"+colName.toLowerCase()+"')}\" th:errors=\"*{"+colName.toLowerCase()+"}\">"+CapitalCase.toCapitalCase(colName)+" error</span>");
-						writer.println("                                        </div>");
+						writer.println("                                        </p>");
 					}
 				}
 				else if(isForeignKey(con, className,colName)) {
@@ -256,15 +253,15 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 							String idCol = getFKTableIdColName(con,fkTableName);
 							String nameCol = getFKTableNameColName(con,fkTableName);
 							fkTableName = CapitalCase.replaceUnderScore(fkTableName).toLowerCase();
-							writer.println("										<div class=\"form-group\">");
+							writer.println("										<p>");
 							writer.println("											<label for=\""+fkTableName.toLowerCase()+"\">"+CapitalCase.toCapitalCase(fkTableName)+"</label> <select id=\""+fkTableName.toLowerCase()+"List\"");
-							writer.println("												class=\"form-control\" th:field=\"*{"+fkTableName.toLowerCase()+"}\"");
+							writer.println("												class=\" "+cssTitle+"-input "+cssTitle+"-padding-16\" th:field=\"*{"+fkTableName.toLowerCase()+"}\"");
 							writer.println("												multiple=\"multiple\">");
 							writer.println("												<option th:each=\""+fkTableName.toLowerCase()+" : ${"+fkTableName.toLowerCase()+"List}\"");
 							writer.println("													th:text=\"${"+fkTableName.toLowerCase()+"."+nameCol.toLowerCase()+"}\" th:value=\"${"+fkTableName.toLowerCase()+"."+idCol.toLowerCase()+"}\"></option>");
 							writer.println("													<span  id=\"errorMessage\" th:if=\"${#fields.hasErrors('"+fkTableName.toLowerCase()+"')}\" th:errors=\"*{"+fkTableName.toLowerCase()+"}\">"+CapitalCase.toCapitalCase(fkTableName)+" error</span>");
 							writer.println("											</select>");
-							writer.println("										</div>");
+							writer.println("										</p>");
 					}
 				}
 			}
@@ -276,11 +273,14 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 			writer.println("						</div>");
 			writer.println("					</div>");
 			writer.println("				</div>");
+			writer.println("				<div class=\""+cssTitle+"-third "+cssTitle+"-container\">");
+			writer.println("					<th:block th:include=\"fragments/adds\"></th:block>");
+			writer.println("				</div>");
 			writer.println("			</div>			");
 			writer.println("		</div>");
 			writer.println("		<!-- End of Main Panel -->");
 			writer.println("		<th:block th:include=\"fragments/footer\"></th:block>");
-			writer.println("	</div>");
+			//writer.println("	</div>");
 			writer.println("	<th:block th:include=\"fragments/scripts\"></th:block>");
 			writer.println("</body>");
 			writer.println("</html>");
@@ -291,16 +291,15 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 			writer.println("<!DOCTYPE html>");
 			writer.println("<html lang=\"en\" xmlns:th=\"http://www.thymeleaf.org\">");
 			writer.println("<th:block th:include=\"fragments/head\"></th:block>");
-			writer.println("<body>");
+			writer.println("<body class=\""+cssTitle+"-black\">");
 			writer.println("	<!-- Page Wrapper -->");
-			writer.println("	<div id=\"wrapper\">");
+			//writer.println("	<div id=\"wrapper\">");
+			writer.println("		<th:block th:include=\"fragments/navbar\"></th:block>");
 			writer.println("		<th:block th:include=\"fragments/sidebar\"></th:block>");
 			writer.println("		<!-- Main Panel -->");
-			writer.println("		<div class=\"main-panel\">");
-			writer.println("			<th:block th:include=\"fragments/navbar\"></th:block>");
-			writer.println("			<!-- Begin Page Content -->");
-			writer.println("			<div class=\"content\">");
-			writer.println("				<div class=\"container-fluid\">");
+			writer.println("		<div class=\""+cssTitle+"-main\" style=\"margin-left:250px\">");
+			writer.println("			 <div class=\""+cssTitle+"-row "+cssTitle+"-padding-64\">");
+			writer.println("    			<div class=\""+cssTitle+"-twothird "+cssTitle+"-container\">");
 			writer.println("					<div class=\"row\">");
 			writer.println("						<div class=\"col-md-12\">");
 			writer.println("							<div class=\"card\">");
@@ -316,12 +315,11 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 				writer.println("	enctype=\"multipart/form-data\">");
 			else		
 				writer.println(">");
-			writer.println("										<div class=\"form-group\">");
+			writer.println("										<p>");
 			  hiddenColName = columnMetaData.getColumnName(1).toLowerCase();
 						if(isForeignKey(con, className,hiddenColName))
 							hiddenColName = columnMetaData.getColumnName(2).toLowerCase();
-						writer.println("   										 <input type=\"hidden\" class=\"form-control\" th:field=\"*{"+hiddenColName+"}\" />");
-						writer.println("									    </div>");
+						writer.println("   										 <input type=\"hidden\" class=\" "+cssTitle+"-input "+cssTitle+"-padding-16\" th:field=\"*{"+hiddenColName+"}\" />");
 						  columnCount = columnMetaData.getColumnCount();
 						for (int i = 2; i <= columnCount; i++) {
 							String colName = columnMetaData.getColumnName(i);
@@ -330,24 +328,24 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 								int coldataTypeSize = columnMetaData.getColumnDisplaySize(i);
 								if(columnMetaData.getColumnTypeName(i).equalsIgnoreCase("LONGBLOB")) 
 								 {
-									writer.println("                                        <div class=\"form-group\">");
-									writer.println("	                                        <label for=\"title\">"+CapitalCase.displayColNameASTableHeadColumns(colName.toLowerCase(), className)+"</label>");
+									writer.println("                                        <p>");
+									//writer.println("	                                        <label for=\"title\">"+CapitalCase.displayColNameASTableHeadColumns(colName.toLowerCase(), className)+"</label>");
 									writer.println("											<p class=\"profile-pic\"> ");
 									writer.println("				<img th:src=\"@{${"+CapitalCase.replaceUnderScore(className).toLowerCase()+".fileDownloadPath}}\" class=\"profile-pic\">");
 									writer.println("											</p>");	
 									writer.println("											<input type=\"file\"");
-									writer.println("	                                        	class=\"form-control\" id=\""+colName.toLowerCase()+"file\" aria-describedby=\""+colName.toLowerCase()+"file\"");
+									writer.println("	                                        	class=\" "+cssTitle+"-input "+cssTitle+"-padding-16\" id=\""+colName.toLowerCase()+"file\" aria-describedby=\""+colName.toLowerCase()+"file\"");
 									writer.println("	                                        	th:field=\"*{"+colName.toLowerCase()+"file}\"");
 									writer.println("	                                        	placeholder=\""+CapitalCase.toCapitalCase(colName)+"file\">");
 									writer.println("                                        <span id=\"errorMessage\" th:if=\"${#fields.hasErrors('"+colName.toLowerCase()+"file')}\" th:errors=\"*{"+colName.toLowerCase()+"file}\">"+CapitalCase.toCapitalCase(colName)+"file error</span>");
-									writer.println("                                        </div>");
+									writer.println("                                        </p>");
 									i = i+2;
 								} else if(columnMetaData.getColumnTypeName(i).equalsIgnoreCase("Date") || columnMetaData.getColumnTypeName(i).equalsIgnoreCase("datetime")) { 
-										writer.println("                                        <div class=\"form-group\">");
-										writer.println("	                                        <label for=\"title\">"+CapitalCase.displayColNameASTableHeadColumns(colName, className)+"</label>");
+										writer.println("                                        <p>");
+										//writer.println("	                                        <label for=\"title\">"+CapitalCase.displayColNameASTableHeadColumns(colName, className)+"</label>");
 										writer.println("											<div class=\"input-group date\">");
-										writer.println("										 <input type=\""+CapitalCase.inputType(colName)+"\"");
-										writer.println("	                                        	class=\"form-control\" id=\""+colName.toLowerCase()+"\" aria-describedby=\""+colName.toLowerCase()+"\"");
+										writer.println("										 <input class=\""+cssTitle+"-input "+cssTitle+"-padding-16\" type=\""+CapitalCase.inputType(colName)+"\"");
+										writer.println("	                                        	id=\""+colName.toLowerCase()+"\" aria-describedby=\""+colName.toLowerCase()+"\"");
 										writer.println("	                                        	th:field=\"*{"+colName.toLowerCase()+"}\"");
 										writer.println("	                                        	placeholder=\""+CapitalCase.toCapitalCase(colName)+"\">");
 										writer.println("												<div class=\"input-group-append\">");
@@ -356,31 +354,31 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 										writer.println("													</div>");
 										writer.println("												</div>");
 										writer.println("                                        <span id=\"errorMessage\" th:if=\"${#fields.hasErrors('"+colName.toLowerCase()+"')}\" th:errors=\"*{"+colName.toLowerCase()+"}\">"+CapitalCase.displayColNameASTableHeadColumns(colName, className)+" error</span>");
-										writer.println("                                        </div>");
+										writer.println("                                        </p>");
 									} else if (columnMetaData.getColumnTypeName(i).equalsIgnoreCase("Timestamp")) {
 									}/*else if (columnMetaData.getColumnTypeName(i).equalsIgnoreCase("LONGBLOB")) {
 										writer.println("                                        <div class=\"form-group\">");
 										writer.println("	                                        <label for=\"title\">"+CapitalCase.displayColNameASTableHeadColumns(colName, className)+"</label> <input type=\""+CapitalCase.inputType(colName)+"file\"");
-										writer.println("	                                        	class=\"form-control\" id=\""+colName.toLowerCase()+"file\" aria-describedby=\""+colName.toLowerCase()+"datafile\"");
+										writer.println("	                                        	class=\" "+cssTitle+"-input "+cssTitle+"-padding-16\" id=\""+colName.toLowerCase()+"file\" aria-describedby=\""+colName.toLowerCase()+"datafile\"");
 										writer.println("	                                        	th:field=\"*{"+colName.toLowerCase()+"file}\">");
 										writer.println("                                        </div>");
 									} */
 									else if(coldataTypeSize>=256) {
-										writer.println("										<div class=\"form-group\">");
-										writer.println("											<label for=\"description\">"+CapitalCase.displayColNameASTableHeadColumns(colName.toLowerCase(), className)+"</label>");
-										writer.println("												<textarea rows=\"4\" type=\"textarea\" class=\"form-control\"");
+										writer.println("										<p>");
+										//writer.println("											<label for=\"description\">"+CapitalCase.displayColNameASTableHeadColumns(colName.toLowerCase(), className)+"</label>");
+										writer.println("												<textarea rows=\"4\" type=\"textarea\" class=\" "+cssTitle+"-input "+cssTitle+"-padding-16\"");
 										writer.println("												id=\""+colName.toLowerCase()+"\" th:field=\"*{"+colName.toLowerCase()+"}\"");
 										writer.println("												placeholder=\"type here ...\" /></textarea>");
 										writer.println("										<span id=\"errorMessage\" th:if=\"${#fields.hasErrors('"+colName.toLowerCase()+"')}\" th:errors=\"*{"+colName.toLowerCase()+"}\">"+colName.toLowerCase()+" error</span>");
-										writer.println("										</div>");
+										writer.println("										</p>");
 									}else {
-										writer.println("                                        <div class=\"form-group\">");
-										writer.println("	                                        <label for=\"title\">"+CapitalCase.displayColNameASTableHeadColumns(colName, className)+"</label> <input type=\""+CapitalCase.inputType(colName)+"\"");
-										writer.println("	                                        	class=\"form-control\" id=\""+colName.toLowerCase()+"\" aria-describedby=\""+colName.toLowerCase()+"\"");
+										writer.println("                                        <p>");
+										//writer.println("	                                        <label for=\"title\">"+CapitalCase.displayColNameASTableHeadColumns(colName, className)+"</label> <input type=\""+CapitalCase.inputType(colName)+"\"");
+										writer.println("	                                        <input class=\" "+cssTitle+"-input "+cssTitle+"-padding-16\" id=\""+colName.toLowerCase()+"\" aria-describedby=\""+colName.toLowerCase()+"\"");
 										writer.println("	                                        	th:field=\"*{"+colName.toLowerCase()+"}\"");
 										writer.println("	                                        	placeholder=\""+CapitalCase.toCapitalCase(colName)+"\">");
 										writer.println("                                        <span id=\"errorMessage\" th:if=\"${#fields.hasErrors('"+colName.toLowerCase()+"')}\" th:errors=\"*{"+colName.toLowerCase()+"}\">"+CapitalCase.displayColNameASTableHeadColumns(colName, className)+" error</span>");
-										writer.println("                                        </div>");
+										writer.println("                                        </p>");
 									}
 								}
 							else if(isForeignKey(con, className,colName)) {
@@ -389,15 +387,15 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 										String idCol = getFKTableIdColName(con,fkTableName);
 										String nameCol = getFKTableNameColName(con,fkTableName);
 										fkTableName = CapitalCase.replaceUnderScore(fkTableName).toLowerCase();
-										writer.println("										<div class=\"form-group\">");
+										writer.println("										<p>");
 										writer.println("											<label for=\""+fkTableName.toLowerCase()+"\">"+CapitalCase.toCapitalCase(fkTableName)+"</label> <select id=\""+fkTableName.toLowerCase()+"List\"");
-										writer.println("												class=\"form-control\" th:field=\"*{"+fkTableName.toLowerCase()+"}\"");
+										writer.println("												class=\" "+cssTitle+"-input "+cssTitle+"-padding-16\" th:field=\"*{"+fkTableName.toLowerCase()+"}\"");
 										writer.println("												multiple=\"multiple\">");
 										writer.println("												<option th:each=\""+fkTableName.toLowerCase()+" : ${"+fkTableName.toLowerCase()+"List}\"");
 										writer.println("													th:text=\"${"+fkTableName.toLowerCase()+"."+nameCol.toLowerCase()+"}\" th:value=\"${"+fkTableName.toLowerCase()+"."+idCol.toLowerCase()+"}\"></option>");
 										writer.println("													<span  id=\"errorMessage\" th:if=\"${#fields.hasErrors('"+fkTableName.toLowerCase()+"')}\" th:errors=\"*{"+fkTableName.toLowerCase()+"}\">"+CapitalCase.toCapitalCase(fkTableName)+" error</span>");
 										writer.println("											</select>");
-										writer.println("										</div>");
+										writer.println("										</p>");
 								}
 							
 							}
@@ -411,13 +409,13 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 			writer.println("						</div>");
 			writer.println("					</div>");
 			writer.println("				</div>");
-			writer.println("				<!-- /.container-fluid -->");
-			writer.println("			</div>");
-			writer.println("			<!-- /.content -->");
+			writer.println("				<div class=\""+cssTitle+"-third "+cssTitle+"-container\">");
+			writer.println("					<th:block th:include=\"fragments/adds\"></th:block>");writer.println("				</div>");
+			writer.println("			</div>			");
 			writer.println("		</div>");
 			writer.println("		<!-- End of Main Panel -->");
 			writer.println("		<th:block th:include=\"fragments/footer\"></th:block>");
-			writer.println("	</div>");
+			//writer.println("	</div>");
 			writer.println("	<th:block th:include=\"fragments/scripts\"></th:block>");
 			writer.println("</body>");
 			writer.println("</html>");
@@ -427,16 +425,14 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 			writer.println("<!DOCTYPE html>");
 			writer.println("<html lang=\"en\" xmlns:th=\"http://www.thymeleaf.org\">");
 			writer.println("<th:block th:include=\"fragments/head\"></th:block>");
-			writer.println("<body>");
+			writer.println("<body class=\""+cssTitle+"-black\">");
 			writer.println("	<!-- Page Wrapper -->");
-			writer.println("	<div id=\"wrapper\">");
+			//writer.println("	<div id=\"wrapper\">");
 			writer.println("		<th:block th:include=\"fragments/sidebar\"></th:block>");
 			writer.println("		<!-- Main Panel -->");
-			writer.println("		<div class=\"main-panel\">");
-			writer.println("			<th:block th:include=\"fragments/navbar\"></th:block>");
-			writer.println("			<!-- Begin Page Content -->");
-			writer.println("			<div class=\"content\">");
-			writer.println("				<div class=\"container-fluid\">");
+			writer.println("		<div class=\""+cssTitle+"-main\" style=\"margin-left:250px\">");
+			writer.println("			 <div class=\""+cssTitle+"-row "+cssTitle+"-padding-64\">");
+			writer.println("    			<div class=\""+cssTitle+"-twothird "+cssTitle+"-container\">");
 			writer.println("					<div class=\"row\">");
 			writer.println("						<div class=\"col-md-12\">");
 			writer.println("							<div class=\"card\">");
@@ -480,12 +476,14 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 			writer.println("						</div>");
 			writer.println("					</div>");
 			writer.println("				</div> ");
-			writer.println("			</div> ");
+			writer.println("				<div class=\""+cssTitle+"-third "+cssTitle+"-container\">");
+			writer.println("					<th:block th:include=\"fragments/adds\"></th:block>");
+			writer.println("				</div>");
+			writer.println("			</div>			");
 			writer.println("		</div>");
 			writer.println("		<!-- End of Main Panel -->");
 			writer.println("		<th:block th:include=\"fragments/footer\"></th:block>");
-			writer.println("	</div>");
-			writer.println("");
+			//writer.println("	</div>");
 			writer.println("	<th:block th:include=\"fragments/scripts\"></th:block>");
 			writer.println("</body>");
 			writer.println("</html>");
@@ -495,16 +493,14 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 			writer.println("<!DOCTYPE html>");
 			writer.println("<html lang=\"en\" xmlns:th=\"http://www.thymeleaf.org\">");
 			writer.println("<th:block th:include=\"fragments/head\"></th:block>");
-			writer.println("<body>");
+			writer.println("<body class=\""+cssTitle+"-black\">");
 			writer.println("	<!-- Page Wrapper -->");
-			writer.println("	<div id=\"wrapper\">");
+			//writer.println("	<div id=\"wrapper\">");
 			writer.println("		<th:block th:include=\"fragments/sidebar\"></th:block>");
 			writer.println("		<!-- Main Panel -->");
-			writer.println("		<div class=\"main-panel\">");
-			writer.println("			<th:block th:include=\"fragments/navbar\"></th:block>");
-			writer.println("			<!-- Begin Page Content -->");
-			writer.println("			<div class=\"content\">");
-			writer.println("				<div class=\"container-fluid\">");
+			writer.println("		<div class=\""+cssTitle+"-main\" style=\"margin-left:250px\">");
+			writer.println("			 <div class=\""+cssTitle+"-row "+cssTitle+"-padding-64\">");
+			writer.println("    			<div class=\""+cssTitle+"-twothird "+cssTitle+"-container\">");
 			writer.println("					<div class=\"row\">");
 			writer.println("						<div class=\"col-md-12\">");
 			writer.println("							<div class=\"card\">");
@@ -592,38 +588,21 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 			writer.println("						</div>");
 			writer.println("					</div>");
 			writer.println("				</div>");
-			writer.println("				<!-- /.container-fluid -->");
-			writer.println("			</div>");
-			writer.println("			<!-- /.content -->");
+			writer.println("				<div class=\""+cssTitle+"-third "+cssTitle+"-container\">");
+			writer.println("					<th:block th:include=\"fragments/adds\"></th:block>");
+			writer.println("				</div>");
+			writer.println("			</div>			");
 			writer.println("		</div>");
 			writer.println("		<!-- End of Main Panel -->");
 			writer.println("		<th:block th:include=\"fragments/footer\"></th:block>");
-			writer.println("	</div>");
-			writer.println("");
+			//writer.println("	</div>");
 			writer.println("	<th:block th:include=\"fragments/scripts\"></th:block>");
 			writer.println("</body>");
 			writer.println("</html>");
 			writer.close();
-			
-		/*	String title = ReadProjectPropertiesFile.projectProps.getProperty("title");
-			
-			File fragmentsDir = new File(resourcePackage + "\\templates\\fragments");
-			if (!fragmentsDir.exists())
-				fragmentsDir.mkdir();
-			
-			writer = new PrintWriter(fragmentsDir.getAbsolutePath() + "\\head.html");
-			
-			if(uitemplateNumber.equals("1")) {
-				new ThymeleafHeaderHtmlPagesImpl().createThymeLeafFirstHeaderPage();
-				new ThymeleafNavigationHtmlPagesImpl().createThymeLeafFirstNavigationPage(writer);
-				new ThymeleafJSScriptslPagesImpl().createThymeLeafJSScriptFirstPage(writer);
-			}
-			else new ThymeleafHeaderHtmlPagesImpl().createThymeLeafDefaultHeaderPage(writer);*/
-			 
-			
+
 			resultSet.close();
 			pstmt.close();
-			
 			
 			
 			

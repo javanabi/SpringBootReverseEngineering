@@ -42,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.headers().frameOptions().sameOrigin().and().authorizeRequests()
-				.antMatchers("/resources/**", "/webjars/**", "/assets/**", "/login", "/register",
+				.antMatchers("/resources/**", "/css/*", "/webjars/**", "/assets/**", "/login", "/register",
 						"/user/changePassword", "/user/savePassword", "/user/resetPassword", "/forgetPassword")
 				.permitAll()
 				// .antMatchers("/baccok/**").hasAnyRole("ADMIN","USER")

@@ -42,7 +42,13 @@ import com.springboot.securityimpl.SpringBootSecurityImpl;
 import com.springboot.service.SBServiceClasses;
 import com.springboot.service.SBServiceInterface;
 import com.springboot.supportfiles.SpringBootSupportImpl;
+import com.springboot.uipages.ThymeleafHeaderHtmlPagesImpl;
+import com.springboot.uipages.ThymeleafHtmlHomeLayout;
+import com.springboot.uipages.ThymeleafHtmlPagesFirstTemplateImpl;
 import com.springboot.uipages.ThymeleafHtmlPagesImpl;
+import com.springboot.uipages.ThymeleafHtmlPagesSecondTemplateImpl;
+import com.springboot.uipages.ThymeleafJSScriptslPagesImpl;
+import com.springboot.uipages.ThymeleafNavigationHtmlPagesImpl;
 import com.springboot.util.InitServletImpl;
 import com.springboot.util.SBUtilImpl;
 import com.xml.impl.WebXmlImpl;
@@ -58,8 +64,10 @@ public class JPAPersistance extends AbstractDataAccessObject {
 	private String desc;
 	private boolean flag;
 	List<String> tableList= readTablesFromPRoperteisFile();
+	String cssTitle = ReadProjectPropertiesFile.projectProps.getProperty("css-title");
+	String uitemplateNumber = ReadProjectPropertiesFile.projectProps.getProperty("uitemplate-number");
 	
-	String projectName,resourcePackage,srcPackage;
+	String projectName,resourcePackage,srcPackage,cssfileLocationPath;
 	String schemaName = getProperties().getProperty("duser");
 	String title = getProperties().getProperty("title");
 	String pack = getProperties().getProperty("pack");
@@ -75,10 +83,11 @@ public class JPAPersistance extends AbstractDataAccessObject {
 	WebXmlImpl webXmlImpl = new WebXmlImpl(pack,title);
 	Map<String, Map<String, String>> outerMap = new HashMap<String, Map<String, String>>();
 	/** Creates a new instance of SecurityDAO */
-	public JPAPersistance(String projectName,String resourcePackage,String srcPackage) {
+	public JPAPersistance(String projectName,String resourcePackage,String srcPackage,String cssfileLocationPath) {
 		this.projectName = projectName;
 		this.resourcePackage = resourcePackage;
 		this.srcPackage = srcPackage;
+		this.cssfileLocationPath = cssfileLocationPath;
 		con = getConnection();
 	}
 
@@ -112,7 +121,7 @@ public class JPAPersistance extends AbstractDataAccessObject {
 			new SBUtilImpl(pack,title).createUtilityClass(projectName);
 			new SBMainClass().createSpringBootMainClass(projectName);
 			new SBServiceInterface().createServiceInterface(title,pack,projectName);
-			supportImpl.createSupportImplClasses(resourcePackage,srcPackage);
+			supportImpl.createSupportImplClasses(resourcePackage,srcPackage,cssfileLocationPath);
 			pomImpl.createPomXml(resourcePackage);
 			aopLogingImpl.createAopLoging(projectName);
 			String catalog = con.getCatalog();
@@ -158,8 +167,28 @@ public class JPAPersistance extends AbstractDataAccessObject {
 
 				}
 			}
-
-			new ThymeLeafMenuImpl(pack, title,resourcePackage).createMenuFiles(con);
+			
+			
+			if(uitemplateNumber.equals("1")) {
+				new ThymeleafHeaderHtmlPagesImpl(resourcePackage).createThymeLeafFirstHeaderPage();
+				new ThymeleafNavigationHtmlPagesImpl(resourcePackage).createThymeLeafFirstNavigationPage();
+				new ThymeleafJSScriptslPagesImpl(resourcePackage).createThymeLeafJSScriptFirstPage();
+				new ThymeLeafMenuImpl(pack, title,resourcePackage).createFirstMenuFiles(con);
+				new ThymeleafHtmlHomeLayout(resourcePackage).createThymeLeafHomeLayouts();
+				
+			}
+			else if(uitemplateNumber.equals("2")) {
+				new ThymeleafHeaderHtmlPagesImpl(resourcePackage).createThymeLeafSecondHeaderPage();
+				new ThymeleafJSScriptslPagesImpl(resourcePackage).createThymeLeafJSScriptFirstPage();
+				new ThymeLeafMenuImpl(pack, title,resourcePackage).createSecondMenuFiles(con);
+				new ThymeleafHtmlHomeLayout(resourcePackage).createThymeLeafSecondLayout();
+			}
+			else {
+				new ThymeleafHeaderHtmlPagesImpl(resourcePackage).createThymeLeafDefaultHeaderPage();
+				new ThymeLeafMenuImpl(pack, title,resourcePackage).createDefaultMenuFiles(con);
+				new ThymeleafHtmlHomeLayout(resourcePackage).createThymeLeafHomeLayouts();
+			}
+			
 			//webXmlImpl.createWebXmlFile(con);
 			securityImpl.createSecurityImplClasses(con,srcPackage, ReadProjectPropertiesFile.projectProps.getProperty("database-login-table"));
 			//cssImpl.createCSSFile1(con);
@@ -180,7 +209,17 @@ public class JPAPersistance extends AbstractDataAccessObject {
 		new SBEntities().createEntityClasses(tableName,con,pack,schemaName,projectName);
 		new SBJPARepositories().createJPAPersistance(tableName,con,pack,schemaName,projectName);
 		new ExceptionImpl().createExceptionClasses(tableName,projectName);
-		new ThymeleafHtmlPagesImpl(pack, title,resourcePackage).createThymeLeafImpPages(tableName, con,outerMap);
+		if(uitemplateNumber.equals("1")) {
+			new ThymeleafHtmlPagesFirstTemplateImpl(pack, title,resourcePackage).createThymeLeafFirstTemplatePages(tableName, con,outerMap);
+		}		
+		else if(uitemplateNumber.equals("2")) {
+			new ThymeleafHtmlPagesSecondTemplateImpl(pack, title,resourcePackage).createThymeLeafSecondTemplatePages(tableName, con,outerMap);
+		}
+		else {
+			new ThymeleafHtmlPagesImpl(pack, title,resourcePackage).createThymeLeafImpPages(tableName, con,outerMap);
+		}
+		
+		
 		//prepareDatabaseConnectionClass();
 		//createPropertiesFile();
 	//	createDateWraperClass();

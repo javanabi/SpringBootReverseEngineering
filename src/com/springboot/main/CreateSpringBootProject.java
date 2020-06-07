@@ -56,6 +56,16 @@ public class CreateSpringBootProject {
 		if(!resourceName.exists())
 			resourceName.mkdir();
 		
+		String staticresourcePackage = resourceName.getAbsolutePath()+"\\static";
+		File staticresourceName = new File(staticresourcePackage);
+		if(!staticresourceName.exists())
+			staticresourceName.mkdir();
+		
+		String cssPath = staticresourceName.getAbsolutePath()+"\\css";
+		File cssresourceName = new File(cssPath);
+		if(!cssresourceName.exists())
+			cssresourceName.mkdir();
+		
 		String testPackage = ".\\"+title+"";
 		File testName = new File(testPackage);
 		if(!testName.exists())
@@ -78,7 +88,7 @@ public class CreateSpringBootProject {
 		
 		dBPropertiesFileRead.readFile();
 		try {
-			new JPAPersistance(projectName.getAbsolutePath(),resourceName.getAbsolutePath(),srcPackage).readDataBaseDetails();
+			new JPAPersistance(projectName.getAbsolutePath(),resourceName.getAbsolutePath(),srcPackage,cssresourceName.getAbsolutePath()).readDataBaseDetails();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

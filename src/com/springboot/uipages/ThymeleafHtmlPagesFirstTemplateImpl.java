@@ -21,7 +21,7 @@ import com.springboot.persistance.jpa.JPAPersistance;
 import com.springboot.project.properties.ReadProjectPropertiesFile;
 import com.springboot.util.InputNamesFileRead;
 
-public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
+public class ThymeleafHtmlPagesFirstTemplateImpl extends AbstractDataAccessObject {
 
 	PreparedStatement pstmt;
 	String pack, resourcePackage;
@@ -34,7 +34,7 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 	List<String> basicTableList= JPAPersistance.basicTableListFromPRoperteisFile();
 	
 	Set<String> inputNames = InputNamesFileRead.inputNames;
-	public ThymeleafHtmlPagesImpl(String pack, String title,String resourcePackage) {
+	public ThymeleafHtmlPagesFirstTemplateImpl(String pack, String title,String resourcePackage) {
 		super();
 		this.pack = pack;
 		this.title = title;
@@ -152,7 +152,7 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 		return outerMap;
 	}
 
-	public void createThymeLeafImpPages(String className, Connection con,
+	public void createThymeLeafFirstTemplatePages(String className, Connection con,
 			Map<String, Map<String, String>> listOfForeignKeys) throws SQLException {
 		try {
 			pstmt = con.prepareStatement("select * from " + className);
@@ -177,14 +177,13 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 			writer.println("<th:block th:include=\"fragments/head\"></th:block>");
 			writer.println("<body>");
 			writer.println("	<!-- Page Wrapper -->");
-			writer.println("	<div id=\"wrapper\">");
+			//writer.println("	<div id=\"wrapper\">");
+			writer.println("		<th:block th:include=\"fragments/navbar\"></th:block>");
 			writer.println("		<th:block th:include=\"fragments/sidebar\"></th:block>");
 			writer.println("		<!-- Main Panel -->");
-			writer.println("		<div class=\"main-panel\">");
-			writer.println("			<th:block th:include=\"fragments/navbar\"></th:block>");
-			writer.println("			<!-- Begin Page Content -->");
-			writer.println("			<div class=\"content\">");
-			writer.println("				<div class=\"container-fluid\">");
+			writer.println("		<div class=\""+cssTitle+"-main\" style=\"margin-left:250px\">");
+			writer.println("			 <div class=\""+cssTitle+"-row "+cssTitle+"-padding-64\">");
+			writer.println("    			<div class=\""+cssTitle+"-twothird "+cssTitle+"-container\">");
 			writer.println("					<div class=\"row\">");
 			writer.println("						<div class=\"col-md-12\">");
 			writer.println("							<div class=\"card\">");
@@ -276,11 +275,14 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 			writer.println("						</div>");
 			writer.println("					</div>");
 			writer.println("				</div>");
+			writer.println("				<div class=\""+cssTitle+"-third "+cssTitle+"-container\">");
+			writer.println("					<th:block th:include=\"fragments/adds\"></th:block>");
+			writer.println("				</div>");
 			writer.println("			</div>			");
 			writer.println("		</div>");
 			writer.println("		<!-- End of Main Panel -->");
 			writer.println("		<th:block th:include=\"fragments/footer\"></th:block>");
-			writer.println("	</div>");
+			//writer.println("	</div>");
 			writer.println("	<th:block th:include=\"fragments/scripts\"></th:block>");
 			writer.println("</body>");
 			writer.println("</html>");
@@ -293,14 +295,13 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 			writer.println("<th:block th:include=\"fragments/head\"></th:block>");
 			writer.println("<body>");
 			writer.println("	<!-- Page Wrapper -->");
-			writer.println("	<div id=\"wrapper\">");
+			//writer.println("	<div id=\"wrapper\">");
+			writer.println("		<th:block th:include=\"fragments/navbar\"></th:block>");
 			writer.println("		<th:block th:include=\"fragments/sidebar\"></th:block>");
 			writer.println("		<!-- Main Panel -->");
-			writer.println("		<div class=\"main-panel\">");
-			writer.println("			<th:block th:include=\"fragments/navbar\"></th:block>");
-			writer.println("			<!-- Begin Page Content -->");
-			writer.println("			<div class=\"content\">");
-			writer.println("				<div class=\"container-fluid\">");
+			writer.println("		<div class=\""+cssTitle+"-main\" style=\"margin-left:250px\">");
+			writer.println("			 <div class=\""+cssTitle+"-row "+cssTitle+"-padding-64\">");
+			writer.println("    			<div class=\""+cssTitle+"-twothird "+cssTitle+"-container\">");
 			writer.println("					<div class=\"row\">");
 			writer.println("						<div class=\"col-md-12\">");
 			writer.println("							<div class=\"card\">");
@@ -411,13 +412,13 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 			writer.println("						</div>");
 			writer.println("					</div>");
 			writer.println("				</div>");
-			writer.println("				<!-- /.container-fluid -->");
-			writer.println("			</div>");
-			writer.println("			<!-- /.content -->");
+			writer.println("				<div class=\""+cssTitle+"-third "+cssTitle+"-container\">");
+			writer.println("					<th:block th:include=\"fragments/adds\"></th:block>");writer.println("				</div>");
+			writer.println("			</div>			");
 			writer.println("		</div>");
 			writer.println("		<!-- End of Main Panel -->");
 			writer.println("		<th:block th:include=\"fragments/footer\"></th:block>");
-			writer.println("	</div>");
+			//writer.println("	</div>");
 			writer.println("	<th:block th:include=\"fragments/scripts\"></th:block>");
 			writer.println("</body>");
 			writer.println("</html>");
@@ -429,14 +430,13 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 			writer.println("<th:block th:include=\"fragments/head\"></th:block>");
 			writer.println("<body>");
 			writer.println("	<!-- Page Wrapper -->");
-			writer.println("	<div id=\"wrapper\">");
+			//writer.println("	<div id=\"wrapper\">");
+			writer.println("		<th:block th:include=\"fragments/navbar\"></th:block>");
 			writer.println("		<th:block th:include=\"fragments/sidebar\"></th:block>");
 			writer.println("		<!-- Main Panel -->");
-			writer.println("		<div class=\"main-panel\">");
-			writer.println("			<th:block th:include=\"fragments/navbar\"></th:block>");
-			writer.println("			<!-- Begin Page Content -->");
-			writer.println("			<div class=\"content\">");
-			writer.println("				<div class=\"container-fluid\">");
+			writer.println("		<div class=\""+cssTitle+"-main\" style=\"margin-left:250px\">");
+			writer.println("			 <div class=\""+cssTitle+"-row "+cssTitle+"-padding-64\">");
+			writer.println("    			<div class=\""+cssTitle+"-twothird "+cssTitle+"-container\">");
 			writer.println("					<div class=\"row\">");
 			writer.println("						<div class=\"col-md-12\">");
 			writer.println("							<div class=\"card\">");
@@ -480,12 +480,14 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 			writer.println("						</div>");
 			writer.println("					</div>");
 			writer.println("				</div> ");
-			writer.println("			</div> ");
+			writer.println("				<div class=\""+cssTitle+"-third "+cssTitle+"-container\">");
+			writer.println("					<th:block th:include=\"fragments/adds\"></th:block>");
+			writer.println("				</div>");
+			writer.println("			</div>			");
 			writer.println("		</div>");
 			writer.println("		<!-- End of Main Panel -->");
 			writer.println("		<th:block th:include=\"fragments/footer\"></th:block>");
-			writer.println("	</div>");
-			writer.println("");
+			//writer.println("	</div>");
 			writer.println("	<th:block th:include=\"fragments/scripts\"></th:block>");
 			writer.println("</body>");
 			writer.println("</html>");
@@ -497,14 +499,13 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 			writer.println("<th:block th:include=\"fragments/head\"></th:block>");
 			writer.println("<body>");
 			writer.println("	<!-- Page Wrapper -->");
-			writer.println("	<div id=\"wrapper\">");
+			//writer.println("	<div id=\"wrapper\">");
+			writer.println("		<th:block th:include=\"fragments/navbar\"></th:block>");
 			writer.println("		<th:block th:include=\"fragments/sidebar\"></th:block>");
 			writer.println("		<!-- Main Panel -->");
-			writer.println("		<div class=\"main-panel\">");
-			writer.println("			<th:block th:include=\"fragments/navbar\"></th:block>");
-			writer.println("			<!-- Begin Page Content -->");
-			writer.println("			<div class=\"content\">");
-			writer.println("				<div class=\"container-fluid\">");
+			writer.println("		<div class=\""+cssTitle+"-main\" style=\"margin-left:250px\">");
+			writer.println("			 <div class=\""+cssTitle+"-row "+cssTitle+"-padding-64\">");
+			writer.println("    			<div class=\""+cssTitle+"-twothird "+cssTitle+"-container\">");
 			writer.println("					<div class=\"row\">");
 			writer.println("						<div class=\"col-md-12\">");
 			writer.println("							<div class=\"card\">");
@@ -592,38 +593,21 @@ public class ThymeleafHtmlPagesImpl extends AbstractDataAccessObject {
 			writer.println("						</div>");
 			writer.println("					</div>");
 			writer.println("				</div>");
-			writer.println("				<!-- /.container-fluid -->");
-			writer.println("			</div>");
-			writer.println("			<!-- /.content -->");
+			writer.println("				<div class=\""+cssTitle+"-third "+cssTitle+"-container\">");
+			writer.println("					<th:block th:include=\"fragments/adds\"></th:block>");
+			writer.println("				</div>");
+			writer.println("			</div>			");
 			writer.println("		</div>");
 			writer.println("		<!-- End of Main Panel -->");
 			writer.println("		<th:block th:include=\"fragments/footer\"></th:block>");
-			writer.println("	</div>");
-			writer.println("");
+			//writer.println("	</div>");
 			writer.println("	<th:block th:include=\"fragments/scripts\"></th:block>");
 			writer.println("</body>");
 			writer.println("</html>");
 			writer.close();
-			
-		/*	String title = ReadProjectPropertiesFile.projectProps.getProperty("title");
-			
-			File fragmentsDir = new File(resourcePackage + "\\templates\\fragments");
-			if (!fragmentsDir.exists())
-				fragmentsDir.mkdir();
-			
-			writer = new PrintWriter(fragmentsDir.getAbsolutePath() + "\\head.html");
-			
-			if(uitemplateNumber.equals("1")) {
-				new ThymeleafHeaderHtmlPagesImpl().createThymeLeafFirstHeaderPage();
-				new ThymeleafNavigationHtmlPagesImpl().createThymeLeafFirstNavigationPage(writer);
-				new ThymeleafJSScriptslPagesImpl().createThymeLeafJSScriptFirstPage(writer);
-			}
-			else new ThymeleafHeaderHtmlPagesImpl().createThymeLeafDefaultHeaderPage(writer);*/
-			 
-			
+
 			resultSet.close();
 			pstmt.close();
-			
 			
 			
 			

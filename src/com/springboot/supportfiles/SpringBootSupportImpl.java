@@ -1,24 +1,14 @@
 package com.springboot.supportfiles;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.Vector;
 
 import org.apache.commons.io.FileUtils;
 
-import com.jdbc.dao.AbstractDataAccessObject;
-import com.jdbc.main.CapitalCase;
-import com.jdbc.main.SqlDatatypeTOJavaWrapperClass;
 import com.springboot.project.properties.ReadProjectPropertiesFile;
 
 public class SpringBootSupportImpl {
@@ -26,6 +16,8 @@ public class SpringBootSupportImpl {
 	String pack;
 	
 	String basePackage = ReadProjectPropertiesFile.projectProps.getProperty("basePackage");
+	String cssTitle = ReadProjectPropertiesFile.projectProps.getProperty("css-title");
+	String uitemplateNumber = ReadProjectPropertiesFile.projectProps.getProperty("uitemplate-number");
 	
 	public SpringBootSupportImpl(String pack) {
 		this.pack = pack;
@@ -35,7 +27,7 @@ public class SpringBootSupportImpl {
 	}
 
 	
-	public void createSupportImplClasses(String resourcePackage,String srcPackage) throws SQLException {
+	public void createSupportImplClasses(String resourcePackage,String srcPackage,String cssfileLocationPath) throws SQLException {
 		try {
 			
 			File title = new File(ReadProjectPropertiesFile.projectProps.getProperty("title"));
@@ -62,15 +54,38 @@ public class SpringBootSupportImpl {
 			e.printStackTrace();
 		}
 		
-//		
-//		try {
-//			File packageDir = new File(".\\actionsupport");
-//			File destDir = new File(".\\com\\"+pack+"\\action");
-//			FileUtils.copyDirectory(packageDir, destDir);
-//
-//		} catch (Exception e) {
-//			System.out.println(e);
-//		}
+		String fullyQualifiedName = ".\\renamedsupportfiles\\" + uitemplateNumber + "\\";
+		File dir = new File(fullyQualifiedName);
+		String[] files = dir.list();
+		for (int i = 0; i < files.length; i++) {
+			String filename = files[i];
+			String srcPath = new File(fullyQualifiedName+"\\"+files[i]).getAbsolutePath();
+			
+			if(filename.startsWith("uitemplate")) {
+				String newFilename = filename.replace("uitemplate", cssTitle);
+				readTextFileWriteToAnother(srcPath,cssfileLocationPath+"\\"+newFilename);
+				
+			}
+		}
 		
+	}
+	
+	public void readTextFileWriteToAnother(String oldFile, String newFile) {
+		try {
+			FileReader reader = new FileReader(oldFile);
+			FileWriter writer = new FileWriter(newFile, true);
+			BufferedReader bufferedReader = new BufferedReader(reader);
+
+			String line;
+
+			while ((line = bufferedReader.readLine()) != null) {
+				writer.write(line.replace("w3-", cssTitle + "-"));
+				writer.write("\r\n");
+			}
+			reader.close();
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

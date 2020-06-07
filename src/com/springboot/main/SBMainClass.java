@@ -24,7 +24,7 @@ public class SBMainClass {
 			packageDir.mkdir();
 
 			PrintWriter writer = new PrintWriter(
-					packageNameString + "\\" + CapitalCase.toCapitalCase(bootstrapClassName) + ".java");
+					packageNameString + "\\" + bootstrapClassName + ".java");
 
 			String packageImport = "package "+basePackage+"." + pack+";\n";
 			packageImport += "import org.springframework.boot.SpringApplication; \n";
@@ -41,10 +41,10 @@ public class SBMainClass {
 			if(ReadProjectPropertiesFile.projectProps.getProperty("swagger2").equals("1")) {
 				writer.println("@EnableSwagger2");
 			}
-			writer.println("public class  "+ CapitalCase.toCapitalCase(bootstrapClassName) +"  {");
+			writer.println("public class  "+ bootstrapClassName +"  {");
 			writer.println("");
 			writer.println("	public static void main(String[] args) {");
-			writer.println("		SpringApplication.run("+ CapitalCase.toCapitalCase(bootstrapClassName) +".class, args);");
+			writer.println("		SpringApplication.run("+ bootstrapClassName +".class, args);");
 			writer.println("	}");
 			writer.println("");
 			if(ReadProjectPropertiesFile.projectProps.getProperty("swagger2").equals("1")) {
